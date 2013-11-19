@@ -79,7 +79,11 @@ def to_http(request, content=None, status=DEFAULT_STATUS_CODE):
         return content
     elif content == None:
         return HttpResponse(status=status)
-    elif is_str(content) or is_int(content) or is_float(content):
+    elif is_bool(content):
+        return JsonResponse(content)
+    elif is_int(content):
+        return HttpResponse(status=content)
+    elif is_str(content) or is_float(content):
         return HttpResponse(content, status=status)
     elif is_dict(content):
         if CAREFUL_SERIALIZATION:

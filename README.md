@@ -4,6 +4,11 @@ django-simple-response
 Return HTTP responses in a easier way
 
 
+## Install
+
+    pip install git+https://github.com/laginha/django-simple-response/
+    
+
 ## Basic Usage
 
 _settings.py_

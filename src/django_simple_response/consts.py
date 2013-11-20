@@ -1,10 +1,10 @@
 from django.conf import settings
 
-DEFAULT_STATUS_CODE   = getattr(settings, 'DEFAULT_STATUS_CODE', 200)
-CAREFUL_SERIALIZATION = getattr(settings, 'DEEP_SERIALIZATION', False)
-SMART_SERIALIZATION   = getattr(settings, 'SMART_SERIALIZATION', False)
+DEFAULT_STATUS_CODE    = getattr(settings, 'DEFAULT_STATUS_CODE', 200)
+IN_DEPTH_SERIALIZATION = getattr(settings, 'IN_DEPTH_SERIALIZATION', True)
+CAREFUL_SERIALIZATION  = getattr(settings, 'CAREFUL_SERIALIZATION', True) 
+CAREFUL_SERIALIZATION  = CAREFUL_SERIALIZATION or IN_DEPTH_SERIALIZATION
 
 IN_DEBUG_MODE = getattr(settings, 'DEBUG', False) and\
-                getattr(settings, 'YARD_DEBUG_MODE', False) and\
                 'debug_toolbar' in settings.INSTALLED_APPS and\
                 hasattr(settings, 'DEBUG_TOOLBAR_CONFIG')

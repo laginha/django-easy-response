@@ -3,7 +3,7 @@ from django.db import models
 from django.http import HttpResponse
 from types import NoneType
 from inspect import isgenerator, isgeneratorfunction
-from .consts import SMART_SERIALIZATION
+from .consts import IN_DEPTH_SERIALIZATION
 
 try:
     from django.contrib.gis.geos import GEOSGeometry
@@ -41,7 +41,7 @@ def basic_serialize(x):
         return x
     return unicode(x)
 
-def smart_serialize(x): 
+def in_depth_serialize(x): 
     if is_basic(x):
         return x
     if is_dict(x):
@@ -62,7 +62,7 @@ def smart_serialize(x):
         return serialize_list( x )
     return unicode(x)
 
-serialize = smart_serialize if SMART_SERIALIZATION else basic_serialize
+serialize = in_depth_serialize if IN_DEPTH_SERIALIZATION else basic_serialize
     
 serialize_dict            = lambda x: {k:serialize(v) for k,v in x.iteritems()}
 serialize_list            = lambda x: [serialize(x) for i in x]

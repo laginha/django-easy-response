@@ -10,7 +10,13 @@ DEFAULT_STATUS_CODE = 400
 
 ## CAREFUL_SERIALIZATION
 
-Check and serialize each item of the iterable returned object (e.g. list and dict). Defaults to `True`.
+Check and serialize each item of the following iterable returned object:
+
+- list
+- generator
+- dict
+
+Defaults to `True`.
 
 ```python
 def view(request):
@@ -34,7 +40,16 @@ CAREFUL_SERIALIZATION = False
 
 ## IN_DEPTH\_SERIALIZATION
 
-Check and serialize in depth each item of the iterable returned object (e.g. list and dict). Defaults to `True`.
+Check and serialize in depth each item of the following iterable returned object:
+
+- list
+- generator
+- dict
+- ValuesSet
+- QuerySet
+- Model instance
+
+Defaults to `True`.
 
 ```python
 def view(request):

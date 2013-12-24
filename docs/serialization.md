@@ -52,6 +52,10 @@ The following table records in order the serialized result for all the supported
         <td>Returns JSON-response with the QuerySet unicoded items as content</td>
     </tr>
     <tr>
+        <td>RelatedManager</td>
+        <td>Returns JSON-response with the RelatedManager's QuerySet unicoded items as content</td>
+    </tr>
+    <tr>
         <td>Model Instance</td>
         <td>Returns JSON-response with the model instance's attribute dict as content</td>
     </tr>

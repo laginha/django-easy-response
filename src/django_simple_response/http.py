@@ -1,8 +1,9 @@
 import simplejson, mimetypes
 from django.conf import settings
 from django.http import HttpResponse
-from .consts import DEFAULT_STATUS_CODE, IN_DEBUG_MODE
-from .utils import *
+from .consts import IN_DEBUG_MODE
+from .utils.functions import *
+from .utils.serialize import *
 
 
 class FileResponse(HttpResponse):
@@ -71,46 +72,3 @@ class _JsonResponse(type):
 class JsonResponse(HttpResponse):
     __metaclass__ = _DebugResponse if IN_DEBUG_MODE else _JsonResponse
 
-
-from .consts import CAREFUL_SERIALIZATION
-
-def to_http(request, content=None, status=DEFAULT_STATUS_CODE):    
-    if is_httpresponse(content):
-        return content
-    elif content == None:
-        return HttpResponse(status=status)
-    elif is_bool(content):
-        return JsonResponse(content)
-    elif is_int(content):
-        return HttpResponse(status=content)
-    elif is_str(content) or is_float(content):
-        return HttpResponse(content, status=status)
-    elif is_dict(content):
-        if CAREFUL_SERIALIZATION:
-            content = serialize_dict(content)
-        return JsonResponse(content, status=status, context=request)
-    elif is_list(content):
-        if CAREFUL_SERIALIZATION:
-            content = serialize_list(content)
-        return JsonResponse(content, status=status, context=request)
-    elif is_geo_value(content):
-        return JsonResponse(content.geojson, status=status, context=request)
-    elif is_valuesset(content):
-        response = serialize_valuesset( content )
-        return JsonResponse(response, status=status, context=request)
-    elif is_queryset(content):
-        response = serialize_queryset( content )
-        return JsonResponse(response, status=status, context=request)
-    elif is_modelinstance(content):
-        response = serialize_model_instance( content )
-        return JsonResponse(response, status=status, context=request) 
-    elif is_file(content):
-        return FileResponse(content, status=status) 
-    elif is_generator(content) or is_iter(content):
-        if CAREFUL_SERIALIZATION:
-            response = serialize_list(content)
-        else:
-            response = [i for i in content]
-        return JsonResponse(response, status=status, context=request)
-    else:
-        return HttpResponse(unicode(content), status=status)

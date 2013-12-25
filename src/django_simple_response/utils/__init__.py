@@ -12,9 +12,6 @@ except ImportError:
     sys.stdout.write("Warning: Could not find the GEOS library.\n")
     is_geodj_project = False
 
-
-is_serializable = lambda x: isinstance(x, (int,str,bool,unicode,float,list,dict,NoneType))
-is_basic        = lambda x: isinstance(x, (int,str,bool,unicode,float,NoneType))
 is_float        = lambda x: isinstance(x, float)
 is_int          = lambda x: isinstance(x, int)
 is_str          = lambda x: isinstance(x, str)

@@ -5,10 +5,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
-from django_simple_response.http import JSONResponse, FileResponse, is_serializable
+from django_simple_response.http import JSONResponse, FileResponse
 from django_simple_response.utils.process import to_http
 from django_simple_response.utils import is_tuple
-from django_simple_response.consts import *
+from django_simple_response.consts import BASIC_SERIALIZATION, DEFAULT_STATUS_CODE
 from datetime import date
 
 
@@ -18,12 +18,9 @@ class SimpleResponseTest(TestCase):
         self.factory = RequestFactory()
         self.user = User.objects.get_or_create(username='username')[0]
 
-    def to_http(self, content, careful, in_depth):
+    def to_http(self, content, basic):
         request = self.factory.get('/')
-        return to_http( request, content, 
-            careful_serialization = careful, 
-            in_depth_serialization = in_depth,
-        )
+        return to_http( request, content, basic_serialization=basic )
 
     def assertTypeOfContent(self, response, type_):
         try:
@@ -41,14 +38,12 @@ class SimpleResponseTest(TestCase):
         else:
             self.assertEqual( response.status_code, DEFAULT_STATUS_CODE )
 
-    def assertResponse(self, value, type_of_response, type_of_content,
-    careful_serialization=CAREFUL_SERIALIZATION, 
-    in_depth_serialization=IN_DEPTH_SERIALIZATION):
-    
-        response = self.to_http(value, careful_serialization, in_depth_serialization)
+    def assertResponse(self, value, type_of_response, type_of_content, basic_serialization=BASIC_SERIALIZATION):
+        response = self.to_http(value, basic_serialization)
         self.assertTypeOfResponse( response, type_of_response ) 
         self.assertStatusCode( response, value )    
         self.assertTypeOfContent( response, type_of_content )
+        return response
     
     #
     # TESTS
@@ -100,166 +95,163 @@ class SimpleResponseTest(TestCase):
             type_of_content  = str)
     
     def test_dict(self):
-        def not_in_depth_error():
-            value = {'foo': ['bar', date.today()]}
-            self.assertResponse(value, 
-                type_of_response = JSONResponse,
-                type_of_content  = dict,
-                in_depth_serialization = False)
-        def not_careful_error():
-            self.assertResponse(value, 
-                type_of_response = JSONResponse,
-                type_of_content  = dict,
-                careful_serialization = False
-            )
         value = {'foo': date.today()}
-        self.assertResponse((400, value), 
-            type_of_response = JSONResponse,
-            type_of_content  = dict)
-        self.assertResponse(value, 
-            type_of_response = JSONResponse,
-            type_of_content  = dict)
-        self.assertResponse(value, 
+        response1 = self.assertResponse((400, value), 
             type_of_response = JSONResponse,
             type_of_content  = dict,
-            in_depth_serialization = False)
-        self.assertRaises(TypeError, not_careful_error)
-        self.assertRaises(TypeError, not_in_depth_error)
+            basic_serialization = True)
+        response2 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = dict,
+            basic_serialization = True)
+        assert response1.content == response2.content
+        response3 = self.assertResponse((400, value), 
+            type_of_response = JSONResponse,
+            type_of_content  = dict,
+            basic_serialization = False)
+        response4 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = dict,
+            basic_serialization = False)
+        assert response3.content == response4.content
+        assert response1.content == response3.content
     
     def test_list(self):
-        def not_in_depth_error():
-            value = ['foo', {'bar':date.today()}]
-            self.assertResponse(value, 
-                type_of_response = JSONResponse,
-                type_of_content  = list,
-                in_depth_serialization = False)
-        def not_careful_error():
-            self.assertResponse(value, 
-                type_of_response = JSONResponse,
-                type_of_content  = list,
-                careful_serialization = False
-            )
         value = ['foo', date.today()]
-        self.assertResponse((400, value), 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        self.assertResponse(value, 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        self.assertResponse(value, 
+        response1 = self.assertResponse((400, value), 
             type_of_response = JSONResponse,
             type_of_content  = list,
-            in_depth_serialization = False)
-        self.assertRaises(TypeError, not_careful_error)
-        self.assertRaises(TypeError, not_in_depth_error)
+            basic_serialization = False)
+        response2 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = list,
+            basic_serialization = False)
+        assert response1.content == response2.content
+        response3 = self.assertResponse((400, value), 
+            type_of_response = JSONResponse,
+            type_of_content  = list,
+            basic_serialization = True)
+        response4 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = list,
+            basic_serialization = True)
+        assert response3.content == response4.content
+        assert response1.content == response3.content
     
     def test_generator(self):
-        def generator():
-            yield 'foo'
-            yield ['bar', date.today()]
-            
-        def not_in_depth_error():
-            self.assertResponse(generator(), 
-                type_of_response = JSONResponse,
-                type_of_content  = list,
-                in_depth_serialization = False)
-        def not_careful_error():
-            value = (date.today() for i in range(9))
-            self.assertResponse(value, 
-                type_of_response = JSONResponse,
-                type_of_content  = list,
-                careful_serialization = False
-            )
         value = (date.today() for i in range(9))
-        self.assertResponse((400, value), 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        value = (date.today() for i in range(9))
-        self.assertResponse(value, 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        value = (date.today() for i in range(9))
-        self.assertResponse(value, 
+        response1 = self.assertResponse((400, value), 
             type_of_response = JSONResponse,
             type_of_content  = list,
-            in_depth_serialization = False)
-        self.assertRaises(TypeError, not_careful_error)
-        self.assertRaises(TypeError, not_in_depth_error)
+            basic_serialization = False)
+        value = (date.today() for i in range(9))
+        response2 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = list,
+            basic_serialization = False)
+        assert response1.content == response2.content
+        value = (date.today() for i in range(9))
+        response3 = self.assertResponse((400, value), 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        value = (date.today() for i in range(9))
+        response4 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        assert response1.content != response3.content
     
     def test_valuesset(self):
         value = User.objects.values()
-        self.assertResponse((400, value), 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        self.assertResponse(value, 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        self.assertResponse(value, 
+        response1 = self.assertResponse((400, value), 
             type_of_response = JSONResponse,
             type_of_content  = list,
-            in_depth_serialization = False)
-        self.assertResponse(value, 
+            basic_serialization = False)
+        response2 = self.assertResponse(value, 
             type_of_response = JSONResponse,
             type_of_content  = list,
-            careful_serialization = False
-        )
+            basic_serialization = False)
+        assert response1.content == response2.content
+        response3 = self.assertResponse((400, value), 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        response4 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        assert response3.content == response4.content
+        assert response1.content != response3.content
     
     def test_queryset(self):
         value = User.objects.all()
-        self.assertResponse((400, value), 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        self.assertResponse(value, 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        self.assertResponse(value, 
+        response1 = self.assertResponse((400, value), 
             type_of_response = JSONResponse,
             type_of_content  = list,
-            in_depth_serialization = False)
-        self.assertResponse(value, 
+            basic_serialization = False)
+        response2 = self.assertResponse(value, 
             type_of_response = JSONResponse,
             type_of_content  = list,
-            careful_serialization = False
-        )
+            basic_serialization = False)
+        assert response1.content == response2.content
+        response3 = self.assertResponse((400, value), 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        response4 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        assert response3.content == response4.content
+        assert response1.content != response3.content
     
     def test_related_manager(self):
         content_type = ContentType.objects.get_for_model(User)
         permission = Permission.objects.get(content_type=content_type, codename='change_user')
         self.user.user_permissions.add( permission )
         value = self.user.user_permissions
-        self.assertResponse((400, value), 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        self.assertResponse(value, 
-            type_of_response = JSONResponse,
-            type_of_content  = list)
-        self.assertResponse(value, 
+        response1 = self.assertResponse((400, value), 
             type_of_response = JSONResponse,
             type_of_content  = list,
-            in_depth_serialization = False)
-        self.assertResponse(value, 
+            basic_serialization = False)
+        response2 = self.assertResponse(value, 
             type_of_response = JSONResponse,
             type_of_content  = list,
-            careful_serialization = False
-        )
+            basic_serialization = False)
+        assert response1.content == response2.content
+        response3 = self.assertResponse((400, value), 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        response4 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        assert response3.content == response4.content
+        assert response1.content != response3.content
     
     def test_model_instance(self):
         value = self.user
-        self.assertResponse((400, value), 
-            type_of_response = JSONResponse,
-            type_of_content  = dict)
-        self.assertResponse(value, 
-            type_of_response = JSONResponse,
-            type_of_content  = dict)
-        self.assertResponse(value, 
+        response1 = self.assertResponse((400, value), 
             type_of_response = JSONResponse,
             type_of_content  = dict,
-            in_depth_serialization = False)
-        self.assertResponse(value, 
+            basic_serialization = False)
+        response2 = self.assertResponse(value, 
             type_of_response = JSONResponse,
             type_of_content  = dict,
-            careful_serialization = False
-        )
+            basic_serialization = False)
+        assert response1.content == response2.content
+        response3 = self.assertResponse((400, value), 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        response4 = self.assertResponse(value, 
+            type_of_response = JSONResponse,
+            type_of_content  = str,
+            basic_serialization = True)
+        assert response3.content == response4.content
+        assert response1.content != response3.content
 
     def test_file(self):
         self.assertResponse((400, open(__file__)), 

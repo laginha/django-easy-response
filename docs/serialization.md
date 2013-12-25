@@ -7,87 +7,87 @@
         <th>Attribute</th>
     </tr>
     <tr>
-        <td>`HttpResponse`</td>
+        <td>HttpResponse</td>
         <td>HTTP-Response</td>
         <td> - </td>
     </tr>
     <tr>
-        <td>`None`</td>
+        <td>None</td>
         <td>HTTP-response</td>
         <td> - </td>
     </tr>
     <tr>
-        <td>`int`</td>
+        <td>int</td>
         <td>HTTP-response</td>
         <td>status code</td>
     </tr>
     <tr>
-        <td>`bool`</td>
+        <td>bool</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`str`</td>
+        <td>str</td>
         <td>HTTP-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`float`</td>
+        <td>float</td>
         <td>HTTP-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`dict`</td>
+        <td>dict</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`list`</td>
+        <td>list</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`Geometry`</td>
+        <td>Geometry</td>
         <td>GeoJSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`ValuesQuerySet`</td>
+        <td>ValuesQuerySet</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`QuerySet`</td>
+        <td>QuerySet</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`RelatedManager`</td>
+        <td>RelatedManager</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`Model` instance</td>
+        <td>Model Instance</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`file`</td>
+        <td>file</td>
         <td>File-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`generator`</td>
+        <td>generator</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>`iterator`</td>
+        <td>iterator</td>
         <td>JSON-response</td>
         <td>content</td>
     </tr>
     <tr>
-        <td>other</td>
+        <td>Any other object</td>
         <td>HTTP-response</td>
         <td>content</td>
     </tr>

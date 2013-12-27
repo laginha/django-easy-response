@@ -8,3 +8,4 @@ def serialization(basic=BASIC_SERIALIZATION):
             return to_http(request, response, basic_serialization=basic)
         return wrapper
     return decorator
+

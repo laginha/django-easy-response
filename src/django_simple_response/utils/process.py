@@ -1,36 +1,39 @@
+from django.shortcuts import render
 from django_simple_response.consts import DEFAULT_STATUS_CODE, BASIC_SERIALIZATION
 from django_simple_response.http import HttpResponse, JsonResponse, FileResponse
-from django_simple_response.utils import *
+from django_simple_response.utils import is_int, is_tuple, is_float, is_file,\
+    is_http_response, is_none, is_int, is_str
+
+
+class MalformedResponse(Exception):
+    pass
 
 
 def to_http(request, response, status=DEFAULT_STATUS_CODE, basic_serialization=BASIC_SERIALIZATION):
-
-    def http_response(content, ststus):
-        return HttpResponse(content, status=status)
-
-    def json_response(content, ststus):
-        return JsonResponse(content, status=status, basic=basic_serialization, context=request)
-        
-    def file_response(content, status):
-        return FileResponse(content, status=status) 
-
-    if is_int(response) and not is_bool(response):
+    if is_int(response):
         return HttpResponse(status=response)
     if is_tuple(response):
-        status, content = response
+        if len(response) == 3:
+            status, template, dictionary = response
+            return render(request, template, dictionary=dictionary, status=status)
+        elif len(response) == 2:
+            if is_str(response[0]) and response[0].endswith('.html'):
+                status, template = response
+                return render(request, template, status=status)
+            status, content = response
+        else:
+            raise MalformedResponse("View can only return a `tuple` with 2 or 3 elements.")
     else:
         content = response
     
-    if is_httpresponse(content):
+    if is_http_response(content):
         return content
     elif is_file(content):
-        return file_response( content, status )
-    elif is_bool(content) or is_dict(content) or is_list(content) or \
-         is_geo_value(content) or is_valuesset(content) or is_queryset(content) or \
-         is_modelinstance(content) or is_related_manager(content) or \
-         is_generator(content) or is_iter(content):
-        return json_response( content, status )
-    elif is_none(content) or is_str(content) or is_int(content) or is_float(content):
-        return http_response( content, status )
-    else:
-        return http_response( unicode(content), status )
+        return FileResponse(content, status=status) 
+    elif is_str(content):
+        if content.endswith('.html'):
+            return render(request, content, status=status)
+        return HttpResponse(content, status=status)
+    elif is_none(content) or is_int(content) or is_float(content):
+        return HttpResponse(content, status=status)
+    return JsonResponse(content, status=status, basic=basic_serialization, context=request)

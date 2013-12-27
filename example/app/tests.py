@@ -54,6 +54,20 @@ class SimpleResponseTest(TestCase):
         self.assertEqual( response.status_code, 401 )
         self.assertEqual( response.content, "Not authorized" )
     
+    def test_template(self):
+        response = self.assertResponse((400, "home.html"), 
+            type_of_response = HttpResponse,
+            type_of_content  = str)
+        assert response.content == "This is a template"
+        self.assertResponse((400, "home.html", {'foo':'bar'}), 
+            type_of_response = HttpResponse,
+            type_of_content  = str)
+        assert response.content == "This is a template"
+        self.assertResponse("home.html", 
+            type_of_response = HttpResponse,
+            type_of_content  = str)
+        assert response.content == "This is a template"
+    
     def test_none(self):
         self.assertResponse((400, None), 
             type_of_response = HttpResponse,

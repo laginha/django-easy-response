@@ -13,7 +13,7 @@ except ImportError:
     is_geodj_project = False
 
 is_float        = lambda x: isinstance(x, float)
-is_int          = lambda x: isinstance(x, int)
+is_int          = lambda x: isinstance(x, int) and not isinstance(x, bool)
 is_str          = lambda x: isinstance(x, str)
 is_unicode      = lambda x: isinstance(x, unicode)
 is_tuple        = lambda x: isinstance(x, tuple)
@@ -28,6 +28,6 @@ is_geo_value    = lambda x: is_geodj_project and isinstance(x, GEOSGeometry)
 
 is_queryset        = lambda x: isinstance(x, QuerySet)
 is_valuesset       = lambda x: isinstance(x, ValuesQuerySet)
-is_modelinstance   = lambda x: isinstance(x, models.Model)
-is_httpresponse    = lambda x: isinstance(x, HttpResponse)
+is_model_instance  = lambda x: isinstance(x, models.Model)
+is_http_response   = lambda x: isinstance(x, HttpResponse)
 is_related_manager = lambda x: all(i in str(type(x)) for i in ["django.", "Related"])

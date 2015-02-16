@@ -34,6 +34,8 @@ def to_http(request, response, status=DEFAULT_STATUS_CODE, basic_serialization=B
         if content.endswith('.html'):
             return render(request, content, status=status)
         return HttpResponse(content, status=status)
-    elif is_none(content) or is_int(content) or is_float(content):
+    elif is_none(content):
+        return HttpResponse(status=status)
+    elif is_int(content) or is_float(content):
         return HttpResponse(content, status=status)
     return JsonResponse(content, status=status, basic=basic_serialization, context=request)

@@ -5,10 +5,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
-from django_simple_response.http import JSONResponse, FileResponse
-from django_simple_response.utils.process import to_http
-from django_simple_response.utils import is_tuple
-from django_simple_response.consts import BASIC_SERIALIZATION, DEFAULT_STATUS_CODE
+from easy_response.http import JSONResponse, FileResponse
+from easy_response.utils.process import to_http
+from easy_response.utils import is_tuple
+from easy_response.consts import BASIC_SERIALIZATION, DEFAULT_STATUS_CODE
 from datetime import date
 
 

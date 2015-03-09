@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django_simple_response.consts import DEFAULT_STATUS_CODE, BASIC_SERIALIZATION
-from django_simple_response.http import HttpResponse, JsonResponse, FileResponse
-from django_simple_response.utils import is_int, is_tuple, is_float, is_file,\
+from easy_response.consts import DEFAULT_STATUS_CODE, BASIC_SERIALIZATION
+from easy_response.http import HttpResponse, JsonResponse, FileResponse
+from easy_response.utils import is_int, is_tuple, is_float, is_file,\
     is_http_response, is_none, is_int, is_str
 
 

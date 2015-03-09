@@ -1,12 +1,14 @@
-django-simple-response
+django-easy-response
 ======================
 
 Return HTTP responses in a easier way
 
+> previously known as `django-simple-response`
+
 
 ## Install
 
-    pip install git+https://github.com/laginha/django-simple-response/
+    pip install easy_response
     
 
 ## Basic Usage
@@ -17,7 +19,7 @@ _settings.py_
 MIDDLEWARE_CLASSES = (
     ...
     # last on the list
-    django_simple_response.middleware.SimpleResponseMiddleware,
+    easy_response.middleware.EasyResponseMiddleware,
 )
 ```
 

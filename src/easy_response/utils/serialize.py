@@ -1,5 +1,5 @@
-from django_simple_response.utils import is_geo_value, is_model_instance, is_valuesset
-from django_simple_response.utils import is_related_manager, is_queryset, is_iter, is_generator
+from easy_response.utils import is_geo_value, is_model_instance, is_valuesset
+from easy_response.utils import is_related_manager, is_queryset, is_iter, is_generator
 
 def basic_serialization(value):
     try:

@@ -2,7 +2,10 @@ from django_simple_response.utils import is_geo_value, is_model_instance, is_val
 from django_simple_response.utils import is_related_manager, is_queryset, is_iter, is_generator
 
 def basic_serialization(value):
-    return unicode(value)
+    try:
+        return unicode(value)
+    except StopIteration:
+        return repr(value)
     
 def careful_serialization(value):
     if is_geo_value(value):

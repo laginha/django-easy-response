@@ -8,7 +8,7 @@ Return HTTP responses in a easier way
 
 ## Install
 
-    pip install easy_response
+    pip install django_easy_response
     
 
 ## Basic Usage

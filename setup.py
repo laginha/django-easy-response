@@ -1,7 +1,12 @@
 from setuptools import setup, find_packages
+from pip.req import parse_requirements
+
+install_reqs = parse_requirements("requirements.txt")
+reqs = [str(each.req) for each in install_reqs if each.req]
+
 
 setup(
-    name             = 'easy-response',
+    name             = 'django-easy-response',
     version          = '1.0.0',
     author           = "Diogo Laginha",
     author_email     = "diogo.laginha.machado@gmail.com",
@@ -9,7 +14,7 @@ setup(
     description      = "Return HTTP responses in a easier way",
     packages         = find_packages(where='src'),
     package_dir      = {'': 'src'},
-    install_requires = ['django', 'simplejson'],
+    install_requires = reqs,
     extras_require   = {},
     zip_safe         = False,
     license          = 'MIT',

@@ -1,8 +1,10 @@
-import simplejson, mimetypes
 from django.conf import settings
 from django.http import HttpResponse
 from .consts import IN_DEBUG_MODE, BASIC_SERIALIZATION
 from .utils.serialize import basic_serialization, careful_serialization
+
+import json
+import mimetypes
 
 
 class FileResponse(HttpResponse):
@@ -25,9 +27,9 @@ class JSONResponse(HttpResponse):
     def __init__(self, content='', status=None, basic=BASIC_SERIALIZATION):
         content_type = 'application/json; charset=utf-8'
         if basic:
-            content = simplejson.dumps( content, default=basic_serialization, ensure_ascii=False )
+            content = json.dumps( content, default=basic_serialization, ensure_ascii=False )
         else:
-            content = simplejson.dumps( content, default=careful_serialization, ensure_ascii=False )
+            content = json.dumps( content, default=careful_serialization, ensure_ascii=False )
         HttpResponse.__init__(self, content      = content, 
                                     status       = status, 
                                     content_type = content_type,)
@@ -40,9 +42,9 @@ class JSONPResponse(HttpResponse):
     def __init__(self, content='', status=None, callback='callback', basic=BASIC_SERIALIZATION):
         content_type = 'application/javascript; charset=utf-8'
         if basic:
-            content = simplejson.dumps( content, default=basic_serialization, ensure_ascii=False )
+            content = json.dumps( content, default=basic_serialization, ensure_ascii=False )
         else:
-            content = simplejson.dumps( content, default=careful_serialization, ensure_ascii=False )
+            content = json.dumps( content, default=careful_serialization, ensure_ascii=False )
         HttpResponse.__init__(self, content      = "%s(%s)" %(callback, content),
                                     status       = status, 
                                     content_type = content_type,)
@@ -54,9 +56,9 @@ class _DebugResponse(HttpResponse):
     """
     def __call__(self, content='', status=None, context=None, basic=BASIC_SERIALIZATION):
         if basic:
-            content = simplejson.dumps( content, default=basic_serialization, ensure_ascii=False )
+            content = json.dumps( content, default=basic_serialization, ensure_ascii=False )
         else:
-            content = simplejson.dumps( content, default=careful_serialization, ensure_ascii=False )
+            content = json.dumps( content, default=careful_serialization, ensure_ascii=False )
         return HttpResponse(content = self.__to_html(content),
                             status  = status, )
 

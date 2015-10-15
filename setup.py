@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name             = 'django-easy-response',
-    version          = '1.0.1',
+    version          = '1.0.2',
     author           = "Diogo Laginha",
     author_email     = "diogo.laginha.machado@gmail.com",
     url              = 'https://github.com/laginha/django-easy-response',

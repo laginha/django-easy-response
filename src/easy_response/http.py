@@ -50,7 +50,7 @@ class JSONPResponse(HttpResponse):
                                     content_type = content_type,)
 
 
-class _DebugResponse(HttpResponse):
+class _DebugResponse(type):
     """
     Json Response for debug purposes (django-debug-toolbar)
     """
